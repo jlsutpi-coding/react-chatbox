@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chatbox</title>
+  </head>
+  <body>
+    <div id="container"></div>
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+    ></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script type="text/babel">
+      function App() {
+        return <> Hello !</>;
+      }
+
+      const container = document.querySelector("#container");
+      const root = ReactDOM.createRoot(container);
+      root.render(<App />);
+      // ReactDOM.createRoot(document.querySelector("#container")).render(<App />);
+    </script>
+  </body>
+</html>
