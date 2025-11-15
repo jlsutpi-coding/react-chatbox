@@ -76,6 +76,14 @@
         border-radius: 10px;
         margin: 0 10px;
       }
+      .loading-spinner {
+        width: 40px;
+        margin: -15px;
+      }
+      .no-message-text {
+        text-align: center;
+        color: rgb(144, 144, 144);
+      }
     </style>
   </head>
   <body>
@@ -110,7 +118,9 @@
             {
               id: crypto.randomUUID(),
               sender: "robot",
-              message: "loading",
+              message: (
+                <img src="./loading-spinner.gif" className="loading-spinner" />
+              ),
             },
           ]);
 
@@ -125,42 +135,55 @@
         }
 
         return (
-          <div className="input-message-container">
-            <input
-              type="text"
-              placeholder="send a message to Chatbox"
-              // size="30"
-              className="chat-message-input"
-              onChange={(e) => {
-                setInputValues(e.target.value);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  sendMessage();
-                }
-                if (e.key === "Escape") {
-                  setInputValues("");
-                }
-              }}
-              value={inputValues}
-            />
-            <button className="message-send-button" onClick={sendMessage}>
-              send
-            </button>
-          </div>
+          <>
+            <p className="no-message-text">
+              {chatMessages.length === 0 &&
+                "Welcome to the chatbot project! Send a message using the textbox below.  "}
+            </p>
+
+            <div className="input-message-container">
+              <input
+                autoFocus
+                type="text"
+                placeholder="send a message to Chatbox"
+                // size="30"
+                className="chat-message-input"
+                onChange={(e) => {
+                  setInputValues(e.target.value);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    sendMessage();
+                  }
+                  if (e.key === "Escape") {
+                    setInputValues("");
+                  }
+                }}
+                value={inputValues}
+              />
+              <button className="message-send-button" onClick={sendMessage}>
+                send
+              </button>
+            </div>
+          </>
         );
       }
 
-      function ChatMessages({ chatMessages }) {
-        const chatMessagesRef = React.useRef(null);
-
+      function useAutoScroll(dependencies) {
+        const containerRef = React.useRef(null);
         React.useEffect(() => {
           // console.log("hello");
-          const containerElem = chatMessagesRef.current;
+          const containerElem = containerRef.current;
           if (containerElem) {
             containerElem.scrollTop = containerElem.scrollHeight;
           }
-        }, [chatMessages]);
+        }, dependencies);
+        return containerRef;
+      }
+
+      function ChatMessages({ chatMessages }) {
+        const chatMessagesRef = useAutoScroll([chatMessages]);
+
         return (
           <div ref={chatMessagesRef} className="chat-messages-container">
             {chatMessages.map((chat) => (
@@ -191,28 +214,7 @@
       }
 
       function App() {
-        const [chatMessages, setChatMessages] = React.useState([
-          {
-            id: 1,
-            sender: "user",
-            message: "hello",
-          },
-          {
-            id: 2,
-            sender: "robot",
-            message: "Hello, How can I help you?",
-          },
-          {
-            id: 3,
-            sender: "user",
-            message: "What date is today?",
-          },
-          {
-            id: 4,
-            sender: "robot",
-            message: "Today is 12 January, 2025",
-          },
-        ]);
+        const [chatMessages, setChatMessages] = React.useState([]);
 
         return (
           <div className="app-container">
